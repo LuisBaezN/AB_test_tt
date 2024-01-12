@@ -204,27 +204,40 @@ traffic_B = pd.concat([users_B['orders'], pd.Series(0, index=np.arange(visits_B[
 
 print('> p-value: {0:.5f}'.format(st.mannwhitneyu(traffic_A, traffic_B)[1]))
 print('> Relative difference: {0:.5f}'.format(traffic_B.mean()/traffic_A.mean() - 1))
-#print('> p-value:', st.mannwhitneyu(cumulative_A['conversion'], cumulative_B['conversion'])[1])
 '''
 El p-value resultante es menor al 5%, sin embargo, no está muy alejado, por lo que, dado los datos de los usuarios anómalos, nos produce un cierto grado de incertidumbre
 a nuestro resultado, aun cuando la diferencia relativa es de aproximadamente un 16%.
 
-Veamos la significancia estadística de la diferencia de la conversión.
+Veamos la significancia estadística en el tamaño promedio de pedido.
 '''
 
-print('> p-value:', st.mannwhitneyu(users_A['revenue'], users_B['revenue'])[1])
-#print('> p-value:', st.mannwhitneyu(cumulative_A['revenue'], cumulative_B['revenue'])[1])
+print(f'> p-value: {st.mannwhitneyu(users_A['revenue'], users_B['revenue'])[1]:.5f}')
 '''
 De nueva cuenta, la incertidumbre del resultado está presente ya que el p-value está pegado al margen de significacia, 
 pero en esta ocasión, favorece la aceptación de la hipótesis nula.
 
-Volvamos a realizar las pruebas, pero en esta ocasión, eliminaremos los usuarios anómalos.
+Volvamos a realizar las pruebas, pero en esta ocasión, eliminaremos a los usuarios anómalos.
 '''
 
 max_orders = 2
 max_revenue = 670.5
 
-users_A[(users_A['orders'] <= max_orders) & (users_A['revenue'] <= max_revenue)]
-users_B[(users_B['orders'] <= max_orders) & (users_B['revenue'] <= max_revenue)]
+users_A = users_A[(users_A['orders'] <= max_orders) & (users_A['revenue'] <= max_revenue)]
+users_B = users_B[(users_B['orders'] <= max_orders) & (users_B['revenue'] <= max_revenue)]
 
+traffic_A = pd.concat([users_A['orders'], pd.Series(0, index=np.arange(visits_A['visits'].sum() - len(users_A)))])
+traffic_B = pd.concat([users_B['orders'], pd.Series(0, index=np.arange(visits_B['visits'].sum() - len(users_B)))])
 
+print('> p-value: {0:.5f}'.format(st.mannwhitneyu(traffic_A, traffic_B)[1]))
+print('> Relative difference: {0:.5f}'.format(traffic_B.mean()/traffic_A.mean() - 1))
+'''
+Ahora el p-value es menor al 1%, por lo que nuestro resultado previo no estaba del todo mal. También podemos notar que la diferencia
+relativa aumentó un 4%.
+
+Pasemos a la diferencia estadísitica del tamaño promedio de pedido.
+'''
+
+print(f'> p-value: {st.mannwhitneyu(users_A['revenue'], users_B['revenue'])[1]:.5f}')
+'''
+Nuestro p-value no cambió mucho, por lo que la hipótesis no es rechazada.
+'''
