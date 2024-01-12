@@ -48,9 +48,6 @@ orders_B = orders_B[~orders_B['visitorId'].isin(users_in_both)]
 cumulative_A = orders_A.groupby('date', as_index=False).agg({'transactionId':'nunique', 'visitorId':'nunique', 'revenue':'sum'})
 cumulative_B = orders_B.groupby('date', as_index=False).agg({'transactionId':'nunique', 'visitorId':'nunique', 'revenue':'sum'})
 
-visits_A = visits[visits['group'] == 'A']
-visits_B = visits[visits['group'] == 'B']
-
 cumulative_A = cumulative_A.merge(visits_A[['date', 'visits']], how='left', on='date')
 cumulative_B = cumulative_B.merge(visits_B[['date', 'visits']], how='left', on='date')
 

@@ -24,7 +24,7 @@ if __name__ == '__main__':
     import pandas as pd
     import numpy as np
 
-    # Al inspeccionar los datos obserbamos que los datos están delimitados por punto y coma.
+    # Al inspeccionar los datos observamos que los datos están delimitados por punto y coma.
     hyp = pd.read_csv('datasets/hypotheses_us.csv', delimiter=';')
 
     # Visualizemos los datos
